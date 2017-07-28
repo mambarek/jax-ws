@@ -1,0 +1,190 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://service.it2go.com" xmlns:ax23="http://model.it2go.com/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ax21="http://util.java/xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://service.it2go.com">
+    <wsdl:documentation>HelloWorld</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://util.java/xsd">
+            <xs:complexType name="Map">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="empty" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax24="http://model.it2go.com/xsd" xmlns:ax22="http://util.java/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://service.it2go.com">
+            <xs:import namespace="http://util.java/xsd"/>
+            <xs:import namespace="http://model.it2go.com/xsd"/>
+            <xs:element name="getUsersResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:Map"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sayHiToUser">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="ax23:UserImpl"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sayHiToUserResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sayHi">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="text" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sayHiResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://model.it2go.com/xsd">
+            <xs:complexType name="UserImpl">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="firstName" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="lastName" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="sayHiToUserRequest">
+        <wsdl:part name="parameters" element="ns:sayHiToUser"/>
+    </wsdl:message>
+    <wsdl:message name="sayHiToUserResponse">
+        <wsdl:part name="parameters" element="ns:sayHiToUserResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getUsersRequest"/>
+    <wsdl:message name="getUsersResponse">
+        <wsdl:part name="parameters" element="ns:getUsersResponse"/>
+    </wsdl:message>
+    <wsdl:message name="sayHiRequest">
+        <wsdl:part name="parameters" element="ns:sayHi"/>
+    </wsdl:message>
+    <wsdl:message name="sayHiResponse">
+        <wsdl:part name="parameters" element="ns:sayHiResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="HelloWorldPortType">
+        <wsdl:operation name="sayHiToUser">
+            <wsdl:input message="ns:sayHiToUserRequest" wsaw:Action="urn:sayHiToUser"/>
+            <wsdl:output message="ns:sayHiToUserResponse" wsaw:Action="urn:sayHiToUserResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getUsers">
+            <wsdl:input message="ns:getUsersRequest" wsaw:Action="urn:getUsers"/>
+            <wsdl:output message="ns:getUsersResponse" wsaw:Action="urn:getUsersResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="sayHi">
+            <wsdl:input message="ns:sayHiRequest" wsaw:Action="urn:sayHi"/>
+            <wsdl:output message="ns:sayHiResponse" wsaw:Action="urn:sayHiResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="HelloWorldSoap11Binding" type="ns:HelloWorldPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="sayHiToUser">
+            <soap:operation soapAction="urn:sayHiToUser" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getUsers">
+            <soap:operation soapAction="urn:getUsers" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="sayHi">
+            <soap:operation soapAction="urn:sayHi" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="HelloWorldSoap12Binding" type="ns:HelloWorldPortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="sayHiToUser">
+            <soap12:operation soapAction="urn:sayHiToUser" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getUsers">
+            <soap12:operation soapAction="urn:getUsers" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="sayHi">
+            <soap12:operation soapAction="urn:sayHi" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="HelloWorldHttpBinding" type="ns:HelloWorldPortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="sayHiToUser">
+            <http:operation location="HelloWorld/sayHiToUser"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="sayHiToUser"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="sayHiToUser"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getUsers">
+            <http:operation location="HelloWorld/getUsers"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="getUsers"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="getUsers"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="sayHi">
+            <http:operation location="HelloWorld/sayHi"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="sayHi"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="sayHi"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="HelloWorld">
+        <wsdl:port name="HelloWorldHttpSoap11Endpoint" binding="ns:HelloWorldSoap11Binding">
+            <soap:address location="http://localhost:8080/axis-ws/services/HelloWorld.HelloWorldHttpSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="HelloWorldHttpSoap12Endpoint" binding="ns:HelloWorldSoap12Binding">
+            <soap12:address location="http://localhost:8080/axis-ws/services/HelloWorld.HelloWorldHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="HelloWorldHttpEndpoint" binding="ns:HelloWorldHttpBinding">
+            <http:address location="http://localhost:8080/axis-ws/services/HelloWorld.HelloWorldHttpEndpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

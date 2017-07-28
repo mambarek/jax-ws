@@ -1,0 +1,53 @@
+<xs:schema xmlns:tns="http://service.it2go.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://service.it2go.com/">
+    <xs:element name="getUsers" type="tns:getUsers"/>
+    <xs:element name="getUsersResponse" type="tns:getUsersResponse"/>
+    <xs:element name="sayHi" type="tns:sayHi"/>
+    <xs:element name="sayHiResponse" type="tns:sayHiResponse"/>
+    <xs:element name="sayHiToUser" type="tns:sayHiToUser"/>
+    <xs:element name="sayHiToUserResponse" type="tns:sayHiToUserResponse"/>
+    <xs:complexType name="sayHi">
+        <xs:sequence>
+            <xs:element name="text" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="sayHiResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getUsers">
+        <xs:sequence/>
+    </xs:complexType>
+    <xs:complexType name="getUsersResponse">
+        <xs:sequence>
+            <xs:element name="return" type="tns:IntegerUserMap" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="IntegerUserMap">
+        <xs:sequence>
+            <xs:element name="entry" type="tns:IdentifiedUser" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="IdentifiedUser">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int"/>
+            <xs:element name="user" type="tns:User" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="User">
+        <xs:sequence>
+            <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+            <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="sayHiToUser">
+        <xs:sequence>
+            <xs:element name="arg0" type="tns:User" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="sayHiToUserResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

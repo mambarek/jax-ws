@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:p="http://cxf.apache.org/policy"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+<!--
+    <jaxws:endpoint
+            xmlns:hello="http://service.it2go.com/"
+            id="HelloWorld"
+            address="/helloWorld"
+            serviceName="hello:HelloWorld"
+            endpointName="hello:HelloWorld"
+            implementor="com.it2go.service.HelloWorldImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </jaxws:endpoint>
+    <jaxws:endpoint
+            xmlns:hello="http://service.it2go.com/"
+            id="AuthoHelloWorld"
+            address="/authoHelloWorld"
+            serviceName="hello:HelloWorld"
+            endpointName="hello:HelloWorld"
+            implementor="com.it2go.service.HelloWorldImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    </jaxws:endpoint>
+
+    <jaxws:endpoint
+            xmlns:hello="http://service.it2go.com/"
+            id="WssHelloWorld"
+            address="/wssHelloWorld"
+            serviceName="hello:HelloWorld"
+            endpointName="hello:HelloWorld"
+            implementor="com.it2go.service.HelloWorldImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <jaxws:features>
+            <p:policies>
+                <wsp:PolicyReference xmlns:wsp="http://www.w3.org/ns/ws-policy" URI="classpath:/document_token.policy"/>
+            </p:policies>
+        </jaxws:features>
+    </jaxws:endpoint>
+
+  -->
+</beans>
