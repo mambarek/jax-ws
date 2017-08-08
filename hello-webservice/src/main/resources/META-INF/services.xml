@@ -1,3 +1,4 @@
+<!--
 <serviceGroup>
     <service name="HelloWorld" scope="application">
         <messageReceivers>
@@ -9,3 +10,4 @@
         <parameter locked="false" name="ServiceClass">com.it2go.service.HelloWorldImpl</parameter>
     </service>
 </serviceGroup>
+-->

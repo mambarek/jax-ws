@@ -3,9 +3,10 @@ package com.it2go.service;
 import com.it2go.model.IntegerUserMapAdapter;
 import com.it2go.model.User;
 import com.it2go.model.UserImpl;
+import org.apache.cxf.annotations.Policy;
+//import org.apache.cxf.annotations.Policy;
 
 import javax.jws.WebParam;
-import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
 // START SNIPPET: service
 
 @WebService
+@Policy(uri = "classpath:/UsernameToken.policy")
 public interface HelloWorld {
 
     String sayHi(@WebParam(name = "text") String text);

@@ -6,4 +6,9 @@
             name="HelloWorld"
             implementation="com.it2go.service.HelloWorldImpl"
             url-pattern="/services/HelloWorld"/>
+
+    <endpoint
+            name="HelloWorld"
+            implementation="com.it2go.service.HelloWorldImpl"
+            url-pattern="/services/authoHelloWorld"/>
 </endpoints>

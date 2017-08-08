@@ -2,18 +2,25 @@
         "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
-<web-app>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
     <display-name>Archetype Created Web Application</display-name>
+    <!--
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            /WEB-INF/cxf-servlet.xml
+        </param-value>
+    </context-param>
+    -->
     <servlet>
         <servlet-name>CXFServlet</servlet-name>
-        <description>Apache CXF Endpoint</description>
         <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-        <!--
+<!--
         <init-param>
             <param-name>config-location</param-name>
-            <param-value>WEB-INF/cxf-servlet.xml</param-value>
+            <param-value>/WEB-INF/cxf-servlet.xml</param-value>
         </init-param>
-        -->
+-->
         <load-on-startup>1</load-on-startup>
     </servlet>
 
@@ -29,28 +36,31 @@
     </security-role>
 
     <!-- constraints für resourecen festlegen-->
-    <security-constraint>
-        <web-resource-collection>
+
+    <!--<security-constraint>-->
+<!--        <web-resource-collection>
             <web-resource-name>Operator Roles Security</web-resource-name>
             <url-pattern>/services/authoHelloWorld/*</url-pattern>
-        </web-resource-collection>
+        </web-resource-collection>-->
 
-        <auth-constraint>
+        <!--<auth-constraint>
             <role-name>operator</role-name>
-        </auth-constraint>
+        </auth-constraint>-->
 
-        <user-data-constraint>
+        <!--<user-data-constraint>-->
             <!-- kein SSL-->
             <!--<transport-guarantee>NONE</transport-guarantee>-->
             <!-- Folgendes erzwingt SSL, bei local Tomcat ist dann https://localhost:8443/ -->
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
-
+            <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+        <!--</user-data-constraint>-->
+    <!--</security-constraint>-->
+<!--
+-
     <login-config>
-        <!--<auth-method>BASIC</auth-method>-->
+        &lt;!&ndash;<auth-method>BASIC</auth-method>&ndash;&gt;
         <auth-method>CLIENT-CERT</auth-method>
     </login-config>
+-->
 
     <listener>
         <listener-class>

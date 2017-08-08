@@ -7,6 +7,8 @@ http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
+
+<!--
     <jaxws:endpoint
             xmlns:hello="http://service.it2go.com/"
             id="HelloWorld"
@@ -23,7 +25,9 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
             serviceName="hello:HelloWorld"
             endpointName="hello:HelloWorld"
             implementor="com.it2go.service.HelloWorldImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    </jaxws:endpoint>
+    </jaxws:endpoint>-->
+    <!--Added callback for checking the usernametoken credential -->
+    <bean class="com.it2go.services.ServerPasswordCallback" id="myPasswordCallback" />
 
     <jaxws:endpoint id="WssHelloWorld"
                     xmlns:serviceNamespace="http://service.it2go.com/"
@@ -31,9 +35,15 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
                     endpointName="serviceNamespace:HelloWorld"
                     implementor="com.it2go.service.HelloWorldImpl"
                     address="/WssHelloWorld">
+        <jaxws:properties>
+            <!--<entry key="ws-security.validate.token" value="false" />-->
+            <entry key="ws-security.callback-handler" value-ref="myPasswordCallback" />
+        </jaxws:properties>
         <jaxws:features>
             <p:policies>
-                <wsp:PolicyReference URI="classpath:/token.policy"/>
+                <!--<wsp:PolicyReference URI="classpath:/no_security.policy"/>-->
+                <wsp:PolicyReference URI="classpath:/UsernameToken.policy"/>
+                <!--<wsp:PolicyReference URI="classpath:/SecureConversationToken.policy"/>-->
             </p:policies>
         </jaxws:features>
     </jaxws:endpoint>
