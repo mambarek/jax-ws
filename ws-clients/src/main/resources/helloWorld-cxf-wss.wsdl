@@ -1,5 +1,4 @@
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.it2go.com/"
-                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.it2go.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
                   name="HelloWorld" targetNamespace="http://service.it2go.com/">
     <wsdl:types>
         <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://service.it2go.com/" elementFormDefault="unqualified" targetNamespace="http://service.it2go.com/" version="1.0">
@@ -123,4 +122,34 @@
             <soap:address location="https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld"/>
         </wsdl:port>
     </wsdl:service>
+    <wsp:Policy
+            xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+            xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy"
+            xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+            wsu:Id="TestSecurityPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <!--Definition des Transportbindings als HTTPS-->
+                <sp:TransportBinding>
+                    <wsp:Policy>
+                        <sp:TransportToken>
+                            <wsp:Policy>
+                                <sp:HttpsToken RequireClientCertificate="false" />
+                            </wsp:Policy>
+                        </sp:TransportToken>
+                    </wsp:Policy>
+                </sp:TransportBinding>
+                <!--Definition der Anforderung an ein SecurityContext Token-->
+                <sp:SupportingTokens>
+                    <wsp:Policy>
+                        <sp:UsernameToken IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                            <wsp:Policy>
+                                <sp:WssUsernameToken11 />
+                            </wsp:Policy>
+                        </sp:UsernameToken>
+                    </wsp:Policy>
+                </sp:SupportingTokens>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
 </wsdl:definitions>

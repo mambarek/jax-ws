@@ -74,7 +74,7 @@
     </binding>
     <service name="HelloWorld">
         <port name="HelloWorldImplPort" binding="tns:HelloWorldImplPortBinding">
-            <soap:address location="https://BB-4512.leismann.net:8443/autho-ri/services/HelloWorld"/>
+            <soap:address location="https://BB-4512.leismann.net:8090/autho-ri/services/HelloWorld"/>
         </port>
     </service>
 </definitions>

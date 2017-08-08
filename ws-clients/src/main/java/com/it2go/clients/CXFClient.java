@@ -4,13 +4,17 @@ import com.it2go.clients.cxf.generated.HelloWorld;
 import com.it2go.clients.cxf.generated.HelloWorld_Service;
 import com.it2go.clients.cxf.generated.IntegerUserMap;
 import com.it2go.clients.cxf.generated.User;
-import com.sun.xml.internal.ws.developer.JAXWSProperties;
+import org.apache.cxf.binding.soap.saaj.SAAJOutInterceptor;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.configuration.security.FiltersType;
 import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.cxf.ws.security.SecurityConstants;
+import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
+import org.apache.ws.security.WSConstants;
+import org.apache.ws.security.handler.WSHandlerConstants;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -18,7 +22,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
@@ -33,6 +36,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by mmbarek on 05.07.2017.
@@ -46,53 +51,92 @@ public class CXFClient {
         try {
             //noAuthenticationTest();
 //            basicAuthenticationTest();
-            caAuthenticationTest();
-        } catch (MalformedURLException e) {
+//            caAuthenticationTest();
+//            testService(null);
+            testUserNameToken();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void testService(String[] args) {
+    private static void setupFiddlerProxy(){
+        System.setProperty("http.proxyHost", "127.0.0.1");
+        System.setProperty("https.proxyHost", "127.0.0.1");
+        System.setProperty("http.proxyPort", "8888");
+        System.setProperty("https.proxyPort", "8888");
+    }
 
+    public static void testUserNameToken() throws MalformedURLException {
+        setupFiddlerProxy();
+        String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
+        //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
+        URL wsdlLocation = new URL(cxfUrl);
+        //URL wsdlLocation = new URL("file:/C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/helloWorld-cxf-wss.wsdl");
+
+        QName qname = new QName("http://service.it2go.com/", "HelloWorld");
+        Service port = Service.create(wsdlLocation, qname);
+        HelloWorld helloService = port.getPort(HelloWorld.class);
+
+        //add username and password for container authentication
+        BindingProvider bp = (BindingProvider) helloService;
+
+        //bp.getRequestContext().put("ws-security.username", "mkyong");
+        //bp.getRequestContext().put("ws-security.password", "123456");
+        bp.getRequestContext().put("security.username", "mkyong");
+        bp.getRequestContext().put("security.password", "123456");
+        bp.getRequestContext().put(WSHandlerConstants.USER, "mkyong");
+        //############################################################################################
+        Map<String,Object> outProps = new HashMap<String,Object>();
+        outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+        outProps.put(WSHandlerConstants.USER, "mkyong");
+        outProps.put("security.username", "mkyong");
+        outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+        //outProps.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld");
+        outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
+                ClientPasswordCallback.class.getName());
+
+        WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
+
+        Client client = ClientProxy.getClient(helloService);
+        Endpoint cxfEndpoint = client.getEndpoint();
+
+        cxfEndpoint.getOutInterceptors().add(wssOut);
+
+        String answ = helloService.sayHi("CXF Client!!!");
+        System.out.println(answ);
+    }
+
+    public static void testService(String[] args) {
+        setupFiddlerProxy();
         try {
-            String cxfUrl = "http://localhost:8080/cxf/services/helloWorld?wsdl";
+            //String cxfUrl = "http://localhost:8080/cxf/services/helloWorld?wsdl";
+            String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
 
             URL wsdlLocation = new URL(cxfUrl);
             HelloWorld_Service service = new HelloWorld_Service(wsdlLocation);
-            String answ = service.getHelloWorld().sayHi("Du bester CXF Client!!!");
-            System.out.println(answ);
+
+            Map<String,Object> outProps = new HashMap<String,Object>();
+
+            outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+            outProps.put(WSHandlerConstants.USER, "mkyong");
+            outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+            outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
+                    ClientPasswordCallback.class.getName());
+
+            //outProps.put("ws-security.username", "mkyong");
+            //outProps.put("ws-security.password", "123456");
+            //outProps.put(SecurityConstants.PASSWORD, "123456");
+            WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
 
             HelloWorld port = service.getHelloWorld();
+            Client client = ClientProxy.getClient(port);
+            Endpoint cxfEndpoint = client.getEndpoint();
 
-            {
-                System.out.println("Invoking sayHi...");
-                java.lang.String _sayHi_text = "your are my best Client!";
-                java.lang.String _sayHi__return = port.sayHi(_sayHi_text);
-                System.out.println("sayHi.result=" + _sayHi__return);
+            cxfEndpoint.getOutInterceptors().add(wssOut);
 
+            String answ = port.sayHi("CXF Client!!!");
+            System.out.println(answ);
 
-            }
-            {
-                System.out.println("Invoking sayHiToUser...");
-                User user = new User();
-                user.setFirstName("Ali");
-                user.setLastName("Mbarek");
-                java.lang.String _sayHiToUser__return = port.sayHiToUser(user);
-                System.out.println("sayHiToUser.result=" + _sayHiToUser__return);
-
-
-            }
-
-            {
-                System.out.println("Invoking getUsers...");
-                IntegerUserMap _getUsers__return = port.getUsers();
-                System.out.println("getUsers.result=" + _getUsers__return);
-
-                _getUsers__return.getEntry().stream().forEach(entry -> System.out.println(entry.getUser().getFirstName() + " " + entry.getUser().getLastName()));
-
-            }
-
-            System.exit(0);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -124,7 +168,7 @@ public class CXFClient {
         // File keystoreFile = new File("client.keystore");
         // keyStore.load(new FileInputStream(keystoreFile),  keypass.toCharArray());
         // URL keystoreUrl = Thread.currentThread().getContextClassLoader().getResource("C:/Program Files/Java/jdk1.8.0_131/jre/lib/security/cacerts");
-        keyStore.load(new FileInputStream(caStorePath),  keypass.toCharArray());
+        keyStore.load(new FileInputStream(caStorePath), keypass.toCharArray());
         KeyManagerFactory keyFactory =
                 KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyFactory.init(keyStore, trustpass.toCharArray());
@@ -148,6 +192,7 @@ public class CXFClient {
     }
 
     protected static void basicAuthenticationTest() throws MalformedURLException {
+        setupFiddlerProxy();
         String WS_URL = "helloWorld-autho-cxf.wsdl";
         QName qname = new QName("http://service.it2go.com/", "HelloWorld");
         URL wsdlLocation = new URL("file:/C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/helloWorld-autho-cxf.wsdl");
@@ -197,7 +242,7 @@ public class CXFClient {
         String trustpass = "changeit";
         // File truststoreFile = new File("client.keystore");
         // trustStore.load(new FileInputStream(truststoreFile), trustpass.toCharArray());
-       // URL truststoreUrl = Thread.currentThread().getContextClassLoader().getResource("C:/Program Files/Java/jdk1.8.0_131/jre/lib/security/cacerts");
+        // URL truststoreUrl = Thread.currentThread().getContextClassLoader().getResource("C:/Program Files/Java/jdk1.8.0_131/jre/lib/security/cacerts");
         //trustStore.load(truststoreUrl.openStream(), trustpass.toCharArray());
         String caStorePath = "C:/Program Files/Java/jdk1.8.0_131/jre/lib/security/cacerts";
         caStorePath = "C:/Dev/Certs/bb-4512.jks";
@@ -213,8 +258,8 @@ public class CXFClient {
         String keypass = "changeit";
         // File keystoreFile = new File("client.keystore");
         // keyStore.load(new FileInputStream(keystoreFile),  keypass.toCharArray());
-       // URL keystoreUrl = Thread.currentThread().getContextClassLoader().getResource("C:/Program Files/Java/jdk1.8.0_131/jre/lib/security/cacerts");
-        keyStore.load(new FileInputStream(caStorePath),  keypass.toCharArray());
+        // URL keystoreUrl = Thread.currentThread().getContextClassLoader().getResource("C:/Program Files/Java/jdk1.8.0_131/jre/lib/security/cacerts");
+        keyStore.load(new FileInputStream(caStorePath), keypass.toCharArray());
         KeyManagerFactory keyFactory =
                 KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyFactory.init(keyStore, trustpass.toCharArray());
@@ -222,13 +267,13 @@ public class CXFClient {
         tlsParams.setKeyManagers(km);
 
         tlsParams.setCertAlias("tomcat");
-         FiltersType filter = new FiltersType();
-         filter.getInclude().add(".*_EXPORT_.*");
-         filter.getInclude().add(".*_EXPORT1024_.*");
-         filter.getInclude().add(".*_WITH_DES_.*");
-         filter.getInclude().add(".*_WITH_NULL_.*");
-         filter.getExclude().add(".*_DH_anon_.*");
-         tlsParams.setCipherSuitesFilter(filter); //set all the needed include and exclude filters.
+        FiltersType filter = new FiltersType();
+        filter.getInclude().add(".*_EXPORT_.*");
+        filter.getInclude().add(".*_EXPORT1024_.*");
+        filter.getInclude().add(".*_WITH_DES_.*");
+        filter.getInclude().add(".*_WITH_NULL_.*");
+        filter.getExclude().add(".*_DH_anon_.*");
+        tlsParams.setCipherSuitesFilter(filter); //set all the needed include and exclude filters.
 
         httpConduit.setTlsClientParameters(tlsParams);
     }

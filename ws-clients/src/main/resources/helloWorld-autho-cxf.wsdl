@@ -1,4 +1,6 @@
-<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.it2go.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="HelloWorld" targetNamespace="http://service.it2go.com/">
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.it2go.com/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  name="HelloWorld" targetNamespace="http://service.it2go.com/">
     <wsdl:types>
         <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://service.it2go.com/" elementFormDefault="unqualified" targetNamespace="http://service.it2go.com/" version="1.0">
             <xs:element name="getUsers" type="tns:getUsers"/>
@@ -118,7 +120,7 @@
     </wsdl:binding>
     <wsdl:service name="HelloWorld">
         <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorld">
-            <soap:address location="https://BB-4512.leismann.net:8443/cxf/services/authoHelloWorld"/>
+            <soap:address location="https://BB-4512.leismann.net:8090/cxf/services/authoHelloWorld"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
