@@ -39,14 +39,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link User }
-     * 
-     */
-    public User createUser() {
-        return new User();
-    }
-
-    /**
      * Create an instance of {@link SayHiToUserResponse }
      * 
      */
@@ -63,19 +55,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetUsersResponse }
+     * Create an instance of {@link IdentifiedUser }
      * 
      */
-    public GetUsersResponse createGetUsersResponse() {
-        return new GetUsersResponse();
-    }
-
-    /**
-     * Create an instance of {@link IntegerUserMap }
-     * 
-     */
-    public IntegerUserMap createIntegerUserMap() {
-        return new IntegerUserMap();
+    public IdentifiedUser createIdentifiedUser() {
+        return new IdentifiedUser();
     }
 
     /**
@@ -95,6 +79,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link User }
+     * 
+     */
+    public User createUser() {
+        return new User();
+    }
+
+    /**
+     * Create an instance of {@link GetUsersResponse }
+     * 
+     */
+    public GetUsersResponse createGetUsersResponse() {
+        return new GetUsersResponse();
+    }
+
+    /**
      * Create an instance of {@link SayHi }
      * 
      */
@@ -103,11 +103,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdentifiedUser }
+     * Create an instance of {@link IntegerUserMap }
      * 
      */
-    public IdentifiedUser createIdentifiedUser() {
-        return new IdentifiedUser();
+    public IntegerUserMap createIntegerUserMap() {
+        return new IntegerUserMap();
     }
 
     /**

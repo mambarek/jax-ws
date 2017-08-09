@@ -119,7 +119,7 @@
     </wsdl:binding>
     <wsdl:service name="HelloWorld">
         <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorld">
-            <soap:address location="https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld"/>
+            <soap:address location="https://localhost:8443/cxf/services/WssHelloWorld"/>
         </wsdl:port>
     </wsdl:service>
     <wsp:Policy
