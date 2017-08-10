@@ -60,18 +60,34 @@ public class CXFClient {
     }
 
     private static void setupFiddlerProxy(){
-        System.setProperty("http.proxyHost", "127.0.0.1");
+
+            //for localhost testing only
+            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                    new javax.net.ssl.HostnameVerifier(){
+
+                        public boolean verify(String hostname,
+                                              javax.net.ssl.SSLSession sslSession) {
+                            if (hostname.equals("localhost")) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+
+
+/*        System.setProperty("http.proxyHost", "127.0.0.1");
         System.setProperty("https.proxyHost", "127.0.0.1");
         System.setProperty("http.proxyPort", "8888");
-        System.setProperty("https.proxyPort", "8888");
+        System.setProperty("https.proxyPort", "8888");*/
     }
 
     public static void testUserNameToken() throws MalformedURLException {
         setupFiddlerProxy();
-        String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
+        //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
+        String cxfUrl = "https://localhost:8443/cxf/services/WssHelloWorld?wsdl";
         //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
         URL wsdlLocation = new URL(cxfUrl);
-        //URL wsdlLocation = new URL("file:/C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/helloWorld-cxf-wss.wsdl");
+        //URL wsdlLocation = new URL("file:/E:/Dev/Git/test/jax-ws/ws-clients/src/main/resources/helloWorld-cxf-wss.wsdl");
 
         QName qname = new QName("http://service.it2go.com/", "HelloWorld");
         Service port = Service.create(wsdlLocation, qname);
@@ -79,17 +95,20 @@ public class CXFClient {
 
         //add username and password for container authentication
         BindingProvider bp = (BindingProvider) helloService;
+        Client client = ClientProxy.getClient(helloService);
+        Endpoint cxfEndpoint = client.getEndpoint();
+        HTTPConduit conduit = (HTTPConduit) client.getConduit();
 
-        //bp.getRequestContext().put("ws-security.username", "mkyong");
-        //bp.getRequestContext().put("ws-security.password", "123456");
-        bp.getRequestContext().put("security.username", "mkyong");
-        bp.getRequestContext().put("security.password", "123456");
-        bp.getRequestContext().put(WSHandlerConstants.USER, "mkyong");
+        bp.getRequestContext().put("ws-security.username", "mkyong");
+        bp.getRequestContext().put("ws-security.password", "123456");
+        //bp.getRequestContext().put("security.username", "mkyong");
+        //bp.getRequestContext().put("security.password", "123456");
+        //bp.getRequestContext().put(WSHandlerConstants.USER, "mkyong");
         //############################################################################################
         Map<String,Object> outProps = new HashMap<String,Object>();
         outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
         outProps.put(WSHandlerConstants.USER, "mkyong");
-        outProps.put("security.username", "mkyong");
+        //outProps.put("security.username", "mkyong");
         outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
         //outProps.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld");
         outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
@@ -97,8 +116,12 @@ public class CXFClient {
 
         WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
 
-        Client client = ClientProxy.getClient(helloService);
-        Endpoint cxfEndpoint = client.getEndpoint();
+        // Disable CN verification from certificate
+        // this is needed for localhost envirement
+        TLSClientParameters tlsParams = new TLSClientParameters();
+        tlsParams.setDisableCNCheck(true);
+        conduit.setTlsClientParameters(tlsParams);
+
 
         cxfEndpoint.getOutInterceptors().add(wssOut);
 
