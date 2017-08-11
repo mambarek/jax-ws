@@ -10,11 +10,13 @@ import org.apache.cxf.configuration.security.FiltersType;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.jaxws.JaxWsClientFactoryBean;
+import org.apache.cxf.jaxws.JaxWsClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
-import org.apache.ws.security.WSConstants;
-import org.apache.ws.security.handler.WSHandlerConstants;
+//import org.apache.ws.security.WSConstants;
+//import org.apache.ws.security.handler.WSHandlerConstants;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -81,10 +83,14 @@ public class CXFClient {
         System.setProperty("https.proxyPort", "8888");*/
     }
 
+    public static void testCxf(){
+
+    }
+
     public static void testUserNameToken() throws MalformedURLException {
         setupFiddlerProxy();
-        //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
-        String cxfUrl = "https://localhost:8443/cxf/services/WssHelloWorld?wsdl";
+        String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
+        //String cxfUrl = "https://localhost:8443/cxf/services/WssHelloWorld?wsdl";
         //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
         URL wsdlLocation = new URL(cxfUrl);
         //URL wsdlLocation = new URL("file:/E:/Dev/Git/test/jax-ws/ws-clients/src/main/resources/helloWorld-cxf-wss.wsdl");
@@ -96,22 +102,26 @@ public class CXFClient {
         //add username and password for container authentication
         BindingProvider bp = (BindingProvider) helloService;
         Client client = ClientProxy.getClient(helloService);
+
         Endpoint cxfEndpoint = client.getEndpoint();
         HTTPConduit conduit = (HTTPConduit) client.getConduit();
-
+        //bp.getRequestContext().put("username", "mkyong");
         bp.getRequestContext().put("ws-security.username", "mkyong");
         bp.getRequestContext().put("ws-security.password", "123456");
+        bp.getRequestContext().put(SecurityConstants.CALLBACK_HANDLER, ClientPasswordCallback.class.getName());
         //bp.getRequestContext().put("security.username", "mkyong");
-        //bp.getRequestContext().put("security.password", "123456");
+//        bp.getRequestContext().put("security.password", "123456");
+       // bp.getRequestContext().put(SecurityConstants.USERNAME, "mkyong");
         //bp.getRequestContext().put(WSHandlerConstants.USER, "mkyong");
         //############################################################################################
         Map<String,Object> outProps = new HashMap<String,Object>();
-        outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
-        outProps.put(WSHandlerConstants.USER, "mkyong");
+        //outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+        outProps.put("action", "UsernameToken");
+        outProps.put("user", "mkyong");
         //outProps.put("security.username", "mkyong");
-        outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+        outProps.put("passwordType", "PasswordText");
         //outProps.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld");
-        outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
+        outProps.put("passwordCallbackClass",
                 ClientPasswordCallback.class.getName());
 
         WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
@@ -121,7 +131,6 @@ public class CXFClient {
         TLSClientParameters tlsParams = new TLSClientParameters();
         tlsParams.setDisableCNCheck(true);
         conduit.setTlsClientParameters(tlsParams);
-
 
         cxfEndpoint.getOutInterceptors().add(wssOut);
 
@@ -140,11 +149,13 @@ public class CXFClient {
 
             Map<String,Object> outProps = new HashMap<String,Object>();
 
+/*
             outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
             outProps.put(WSHandlerConstants.USER, "mkyong");
             outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
             outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
                     ClientPasswordCallback.class.getName());
+*/
 
             //outProps.put("ws-security.username", "mkyong");
             //outProps.put("ws-security.password", "123456");

@@ -14,7 +14,7 @@ import java.util.Map;
 // START SNIPPET: service
 
 @WebService
-@Policy(uri = "classpath:/UsernameToken.policy")
+@Policy(placement = Policy.Placement.BINDING, uri = "classpath:/UsernameToken.policy")
 public interface HelloWorld {
 
     String sayHi(@WebParam(name = "text") String text);

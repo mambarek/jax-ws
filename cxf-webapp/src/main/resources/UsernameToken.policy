@@ -1,14 +1,18 @@
 <wsp:Policy
 		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
-		xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy"
-		xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+		xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
 		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"		
 		wsu:Id="TestSecurityPolicy">
-		<wsp:ExactlyOne>
+<!--
+	xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy"
+	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+-->
+
+	<wsp:ExactlyOne>
 			<wsp:All>
 				<!--Definition des Transportbindings als HTTPS-->
 
-				<sp:TransportBinding>
+<!--				<sp:TransportBinding>
 					<wsp:Policy>
 						<sp:TransportToken>
 							<wsp:Policy>
@@ -16,7 +20,7 @@
 							</wsp:Policy>
 						</sp:TransportToken>
 					</wsp:Policy>
-				</sp:TransportBinding>
+				</sp:TransportBinding>-->
 				<!--Definition der Anforderung an ein SecurityContext Token-->
 				<sp:SupportingTokens>
 					<wsp:Policy>

@@ -7,20 +7,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for sayHiToUser complex type.
+ * <p>Java-Klasse für sayHiToUser complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
  * 
  * <pre>
- * &lt;complexType name="sayHiToUser">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="arg0" type="{http://service.it2go.com/}User" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="sayHiToUser"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="arg0" type="{http://service.it2go.com/}User" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -34,7 +34,7 @@ public class SayHiToUser {
     protected User arg0;
 
     /**
-     * Gets the value of the arg0 property.
+     * Ruft den Wert der arg0-Eigenschaft ab.
      * 
      * @return
      *     possible object is
@@ -46,7 +46,7 @@ public class SayHiToUser {
     }
 
     /**
-     * Sets the value of the arg0 property.
+     * Legt den Wert der arg0-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is

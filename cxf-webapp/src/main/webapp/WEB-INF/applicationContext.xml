@@ -36,7 +36,7 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
                     implementor="com.it2go.service.HelloWorldImpl"
                     address="/WssHelloWorld">
         <jaxws:properties>
-            <!--<entry key="ws-security.validate.token" value="false" />-->
+            <entry key="ws-security.validate.token" value="false" />
             <entry key="ws-security.callback-handler" value-ref="myPasswordCallback" />
         </jaxws:properties>
         <jaxws:features>
@@ -46,6 +46,19 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
                 <!--<wsp:PolicyReference URI="classpath:/SecureConversationToken.policy"/>-->
             </p:policies>
         </jaxws:features>
+<!--        <jaxws:inInterceptors>
+            <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+                <constructor-arg>
+                    <map>
+                        <entry key="action" value="UsernameToken"/>
+                        <entry key="passwordType" value="PasswordText"/>
+                        <entry key="passwordCallbackRef">
+                            <ref bean="myPasswordCallback"/>
+                        </entry>
+                    </map>
+                </constructor-arg>
+            </bean>
+        </jaxws:inInterceptors>-->
     </jaxws:endpoint>
 
 </beans>

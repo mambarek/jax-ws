@@ -24,12 +24,12 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _SayHiResponse_QNAME = new QName("http://service.it2go.com/", "sayHiResponse");
-    private final static QName _SayHiToUserResponse_QNAME = new QName("http://service.it2go.com/", "sayHiToUserResponse");
     private final static QName _GetUsers_QNAME = new QName("http://service.it2go.com/", "getUsers");
-    private final static QName _SayHiToUser_QNAME = new QName("http://service.it2go.com/", "sayHiToUser");
     private final static QName _GetUsersResponse_QNAME = new QName("http://service.it2go.com/", "getUsersResponse");
     private final static QName _SayHi_QNAME = new QName("http://service.it2go.com/", "sayHi");
+    private final static QName _SayHiResponse_QNAME = new QName("http://service.it2go.com/", "sayHiResponse");
+    private final static QName _SayHiToUser_QNAME = new QName("http://service.it2go.com/", "sayHiToUser");
+    private final static QName _SayHiToUserResponse_QNAME = new QName("http://service.it2go.com/", "sayHiToUserResponse");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.it2go.clients.cxf.generated
@@ -39,51 +39,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SayHiToUserResponse }
-     * 
-     */
-    public SayHiToUserResponse createSayHiToUserResponse() {
-        return new SayHiToUserResponse();
-    }
-
-    /**
      * Create an instance of {@link GetUsers }
      * 
      */
     public GetUsers createGetUsers() {
         return new GetUsers();
-    }
-
-    /**
-     * Create an instance of {@link IdentifiedUser }
-     * 
-     */
-    public IdentifiedUser createIdentifiedUser() {
-        return new IdentifiedUser();
-    }
-
-    /**
-     * Create an instance of {@link SayHiToUser }
-     * 
-     */
-    public SayHiToUser createSayHiToUser() {
-        return new SayHiToUser();
-    }
-
-    /**
-     * Create an instance of {@link SayHiResponse }
-     * 
-     */
-    public SayHiResponse createSayHiResponse() {
-        return new SayHiResponse();
-    }
-
-    /**
-     * Create an instance of {@link User }
-     * 
-     */
-    public User createUser() {
-        return new User();
     }
 
     /**
@@ -103,6 +63,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SayHiResponse }
+     * 
+     */
+    public SayHiResponse createSayHiResponse() {
+        return new SayHiResponse();
+    }
+
+    /**
+     * Create an instance of {@link SayHiToUser }
+     * 
+     */
+    public SayHiToUser createSayHiToUser() {
+        return new SayHiToUser();
+    }
+
+    /**
+     * Create an instance of {@link SayHiToUserResponse }
+     * 
+     */
+    public SayHiToUserResponse createSayHiToUserResponse() {
+        return new SayHiToUserResponse();
+    }
+
+    /**
      * Create an instance of {@link IntegerUserMap }
      * 
      */
@@ -111,21 +95,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link SayHiResponse }{@code >}}
+     * Create an instance of {@link IdentifiedUser }
      * 
      */
-    @XmlElementDecl(namespace = "http://service.it2go.com/", name = "sayHiResponse")
-    public JAXBElement<SayHiResponse> createSayHiResponse(SayHiResponse value) {
-        return new JAXBElement<SayHiResponse>(_SayHiResponse_QNAME, SayHiResponse.class, null, value);
+    public IdentifiedUser createIdentifiedUser() {
+        return new IdentifiedUser();
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link SayHiToUserResponse }{@code >}}
+     * Create an instance of {@link User }
      * 
      */
-    @XmlElementDecl(namespace = "http://service.it2go.com/", name = "sayHiToUserResponse")
-    public JAXBElement<SayHiToUserResponse> createSayHiToUserResponse(SayHiToUserResponse value) {
-        return new JAXBElement<SayHiToUserResponse>(_SayHiToUserResponse_QNAME, SayHiToUserResponse.class, null, value);
+    public User createUser() {
+        return new User();
     }
 
     /**
@@ -135,15 +117,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://service.it2go.com/", name = "getUsers")
     public JAXBElement<GetUsers> createGetUsers(GetUsers value) {
         return new JAXBElement<GetUsers>(_GetUsers_QNAME, GetUsers.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link SayHiToUser }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://service.it2go.com/", name = "sayHiToUser")
-    public JAXBElement<SayHiToUser> createSayHiToUser(SayHiToUser value) {
-        return new JAXBElement<SayHiToUser>(_SayHiToUser_QNAME, SayHiToUser.class, null, value);
     }
 
     /**
@@ -162,6 +135,33 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://service.it2go.com/", name = "sayHi")
     public JAXBElement<SayHi> createSayHi(SayHi value) {
         return new JAXBElement<SayHi>(_SayHi_QNAME, SayHi.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SayHiResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.it2go.com/", name = "sayHiResponse")
+    public JAXBElement<SayHiResponse> createSayHiResponse(SayHiResponse value) {
+        return new JAXBElement<SayHiResponse>(_SayHiResponse_QNAME, SayHiResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SayHiToUser }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.it2go.com/", name = "sayHiToUser")
+    public JAXBElement<SayHiToUser> createSayHiToUser(SayHiToUser value) {
+        return new JAXBElement<SayHiToUser>(_SayHiToUser_QNAME, SayHiToUser.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SayHiToUserResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://service.it2go.com/", name = "sayHiToUserResponse")
+    public JAXBElement<SayHiToUserResponse> createSayHiToUserResponse(SayHiToUserResponse value) {
+        return new JAXBElement<SayHiToUserResponse>(_SayHiToUserResponse_QNAME, SayHiToUserResponse.class, null, value);
     }
 
 }

@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "HelloWorld", targetNamespace = "http://service.it2go.com/", wsdlLocation = "file:/E:/Dev/Git/test/jax-ws/ws-clients/src/main/resources/helloWorld-ri.wsdl")
+@WebServiceClient(name = "HelloWorld", targetNamespace = "http://service.it2go.com/", wsdlLocation = "file:/C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/helloWorld-ri.wsdl")
 public class HelloWorld_Service
     extends Service
 {
@@ -30,7 +30,7 @@ public class HelloWorld_Service
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/E:/Dev/Git/test/jax-ws/ws-clients/src/main/resources/helloWorld-ri.wsdl");
+            url = new URL("file:/C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/helloWorld-ri.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
