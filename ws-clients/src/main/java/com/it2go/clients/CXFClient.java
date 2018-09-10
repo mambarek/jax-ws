@@ -4,6 +4,7 @@ import com.it2go.clients.cxf.generated.HelloWorld;
 import com.it2go.clients.cxf.generated.HelloWorld_Service;
 import com.it2go.clients.cxf.generated.IntegerUserMap;
 import com.it2go.clients.cxf.generated.User;
+import com.sun.xml.internal.ws.developer.JAXWSProperties;
 import org.apache.cxf.binding.soap.saaj.SAAJOutInterceptor;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.configuration.security.FiltersType;
@@ -15,6 +16,20 @@ import org.apache.cxf.jaxws.JaxWsClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
+import org.apache.wss4j.dom.handler.WSHandlerConstants;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ContextResource;
+import org.springframework.core.io.Resource;
 //import org.apache.ws.security.WSConstants;
 //import org.apache.ws.security.handler.WSHandlerConstants;
 
@@ -29,6 +44,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -39,6 +55,7 @@ import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -55,7 +72,8 @@ public class CXFClient {
 //            basicAuthenticationTest();
 //            caAuthenticationTest();
 //            testService(null);
-            testUserNameToken();
+//            testUserNameToken();
+            testSpring();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,9 +107,9 @@ public class CXFClient {
 
     public static void testUserNameToken() throws MalformedURLException {
         setupFiddlerProxy();
-        String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
-        //String cxfUrl = "https://localhost:8443/cxf/services/WssHelloWorld?wsdl";
         //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
+        //String cxfUrl = "https://localhost:8443/cxf/services/WssHelloWorld?wsdl";
+        String cxfUrl = "http://bb-4512.leismann.net:8080/cxf/services/WssHelloWorld?wsdl";
         URL wsdlLocation = new URL(cxfUrl);
         //URL wsdlLocation = new URL("file:/E:/Dev/Git/test/jax-ws/ws-clients/src/main/resources/helloWorld-cxf-wss.wsdl");
 
@@ -107,19 +125,35 @@ public class CXFClient {
         HTTPConduit conduit = (HTTPConduit) client.getConduit();
         //bp.getRequestContext().put("username", "mkyong");
         bp.getRequestContext().put("ws-security.username", "mkyong");
-        bp.getRequestContext().put("ws-security.password", "123456");
+        //bp.getRequestContext().put("ws-security.username.encrypt", "mkyong"); //"security.encryption.username"
+        //bp.getRequestContext().put("security.encryption.username", "tomcat");
+        bp.getRequestContext().put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
+        //bp.getRequestContext().put("ws-security.password", "123456");
         bp.getRequestContext().put(SecurityConstants.CALLBACK_HANDLER, ClientPasswordCallback.class.getName());
-        //bp.getRequestContext().put("security.username", "mkyong");
+        bp.getRequestContext().put("security.username", "mkyong");
+        bp.getRequestContext().put(WSHandlerConstants.ENCRYPTION_PARTS, "{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body");
 //        bp.getRequestContext().put("security.password", "123456");
        // bp.getRequestContext().put(SecurityConstants.USERNAME, "mkyong");
         //bp.getRequestContext().put(WSHandlerConstants.USER, "mkyong");
+/*        try {
+            SSLSocketFactory factory = getSslSocketFactory();
+            bp.getRequestContext().put(JAXWSProperties.SSL_SOCKET_FACTORY, factory);
+            //prepareConduit(conduit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+
         //############################################################################################
         Map<String,Object> outProps = new HashMap<String,Object>();
         //outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+        outProps.put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
         outProps.put("action", "UsernameToken");
         outProps.put("user", "mkyong");
         //outProps.put("security.username", "mkyong");
         outProps.put("passwordType", "PasswordText");
+        outProps.put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
+        //outProps.put(WSHandlerConstants.ENCRYPTION_PARTS, "{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body");
         //outProps.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld");
         outProps.put("passwordCallbackClass",
                 ClientPasswordCallback.class.getName());
@@ -310,5 +344,23 @@ public class CXFClient {
         tlsParams.setCipherSuitesFilter(filter); //set all the needed include and exclude filters.
 
         httpConduit.setTlsClientParameters(tlsParams);
+    }
+
+    public static void testSpring(){
+        //ApplicationContext context = ...;
+        ClassPathXmlApplicationContext context
+                = new ClassPathXmlApplicationContext(new String[] {"client-beans.xml"});
+
+        JaxWsClientProxy proxy = (JaxWsClientProxy)context.getBean("helloClient");
+        HelloWorld client = (HelloWorld)proxy.getClient().getEndpoint();
+        //HelloWorld client = (HelloWorld)context.getBean("helloClient");
+
+        //JaxWsClientProxy proxy = (JaxWsClientProxy)context.getBean("helloClient");
+        //proxy.getClient().getEndpoint()
+
+        String response = client.sayHi("Joe");
+        System.out.println("Response: " + response);
+        System.exit(0);
+        // END SNIPPET: client
     }
 }

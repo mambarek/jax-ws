@@ -12,8 +12,52 @@
 
 	<wsp:ExactlyOne>
 			<wsp:All>
-
+				<sp:SymmetricBinding>
+					<wsp:Policy>
+						<sp:ProtectionToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+									<wsp:Policy>
+										<sp:RequireDerivedKeys/>
+										<sp:RequireThumbprintReference/>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:ProtectionToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Lax/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+						<sp:EncryptSignature />
+						<sp:OnlySignEntireHeadersAndBody/>
+					</wsp:Policy>
+				</sp:SymmetricBinding>
+				<sp:SignedParts>
+					<sp:Body/>
+					<sp:Header Name="To" Namespace="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
+				</sp:SignedParts>
+				<sp:EncryptedParts>
+					<sp:Body />
+				</sp:EncryptedParts>
+				<sp:Wss11>
+					<wsp:Policy>
+						<sp:MustSupportRefKeyIdentifier/>
+						<sp:MustSupportRefIssuerSerial/>
+						<sp:MustSupportRefThumbprint/>
+						<sp:MustSupportRefEncryptedKey/>
+						<sp:RequireSignatureConfirmation/>
+					</wsp:Policy>
+				</sp:Wss11>
 				<!--Definition des Transportbindings als HTTPS-->
+<!--
 				<sp:TransportBinding>
 					<wsp:Policy>
 						<sp:TransportToken>
@@ -34,6 +78,7 @@
 					</wsp:Policy>
 				</sp:TransportBinding>
 
+-->
 
 				<!--				<sp:TransportBinding>
                                     <wsp:Policy>
@@ -58,16 +103,8 @@
 							</wsp:Policy>
 						</sp:UsernameToken>
 					</wsp:Policy>
-				</sp:SupportingTokens>-->
-				<sp:SignedEncryptedSupportingTokens>
-					<wsp:Policy>
-						<sp:UsernameToken IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
-							<wsp:Policy>
-								<sp:WssUsernameToken11 />
-							</wsp:Policy>
-						</sp:UsernameToken>
-					</wsp:Policy>
-				</sp:SignedEncryptedSupportingTokens>
+				</sp:SupportingTokens>
+				-->
 			</wsp:All>
 		</wsp:ExactlyOne>
 	</wsp:Policy>

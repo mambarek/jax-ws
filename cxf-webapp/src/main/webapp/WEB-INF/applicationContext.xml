@@ -38,12 +38,14 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
         <jaxws:properties>
             <entry key="ws-security.validate.token" value="false" />
             <entry key="ws-security.callback-handler" value-ref="myPasswordCallback" />
+            <entry key="security.signature.properties" value="C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties" />
         </jaxws:properties>
         <jaxws:features>
             <p:policies>
                 <!--<wsp:PolicyReference URI="classpath:/no_security.policy"/>-->
-                <wsp:PolicyReference URI="classpath:/UsernameToken.policy"/>
+                <!--<wsp:PolicyReference URI="classpath:/UsernameToken.policy"/>-->
                 <!--<wsp:PolicyReference URI="classpath:/SecureConversationToken.policy"/>-->
+                <wsp:PolicyReference URI="classpath:/SignedEncryptedSupportingTokens.policy"/>
             </p:policies>
         </jaxws:features>
 <!--        <jaxws:inInterceptors>
