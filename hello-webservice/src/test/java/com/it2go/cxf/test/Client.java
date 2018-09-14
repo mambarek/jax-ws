@@ -2,6 +2,12 @@ package com.it2go.cxf.test;
 
 import com.it2go.model.UserImpl;
 import com.it2go.service.HelloWorld;
+import com.it2go.service.HelloWorld2;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
+import org.apache.wss4j.dom.WSConstants;
+import org.apache.wss4j.dom.handler.WSHandlerConstants;
+import org.junit.Test;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -9,23 +15,87 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public final class Client {
 
     private static final QName SERVICE_NAME
-            = new QName("http://service.it2go.com/", "HelloWorld");
+            = new QName("http://service.it2go.com/", "HelloWorld2");
     private static final QName PORT_NAME
-            = new QName("http://service.it2go.com/", "HelloWorldPort");
+            = new QName("http://service.it2go.com/", "HelloWorld2Port");
 
 
-    private Client() {
+    public HelloWorld getHelloWolrdService() throws MalformedURLException {
+        URL serviceWSDL = new URL("http://localhost:9000/helloWorld?wsdl");
+        final QName serviceName = new QName("http://service.it2go.com/", "HelloWorld");
+        Service service = Service.create(serviceWSDL, serviceName);
+        // Endpoint Address
+        //String endpointAddress = "http://localhost:9000/helloWorld";
+        // If web service deployed on Tomcat (either standalone or embedded)
+        // as described in sample README, endpoint should be changed to:
+        // String endpointAddress = "http://localhost:8080/java_first_jaxws/services/hello_world";
+
+        // Add a port to the Service
+        //service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+
+        return service.getPort(HelloWorld.class);
+
     }
 
-    public static void main(String args[]) throws Exception {
+    @Test
+    public void testHelloWorld() throws MalformedURLException {
+
+        HelloWorld helloWorld = getHelloWolrdService();
+
+        final org.apache.cxf.endpoint.Client client = ClientProxy.getClient(helloWorld);
+
+        // add UserToken OutputInteceptor
+        //addUserTokenOutInterceptor(client);
+
+        //
+        addX500OutInterceptor(client);
+
+        helloWorld.sayHi("Ali Mbarek");
+    }
+
+    private void addUserTokenOutInterceptor(org.apache.cxf.endpoint.Client client){
+
+        Map<String, Object> outProps = new HashMap<>();
+        outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+        // user
+        outProps.put(WSHandlerConstants.USER,"mkyoung");
+        // Password type : plain text
+        outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+        // for hashed password use:
+        //inProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_DIGEST);
+        // Callback used to retrieve password for given user.
+        outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
+                ClientPasswordCallback.class.getName());
+
+        client.getOutInterceptors().add(new WSS4JOutInterceptor(outProps));
+    }
+
+    private void addX500OutInterceptor(org.apache.cxf.endpoint.Client client){
+        Map<String, Object> outProps = new HashMap<>();
+
+        outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.SIGNATURE);
+        //outProps.put(WSHandlerConstants.USER,"tomcat");
+        outProps.put(WSHandlerConstants.SIG_PROP_FILE,"client_sign.properties");
+        outProps.put(WSHandlerConstants.USER,"tomcat");
+        outProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
+                ClientPasswordCallback.class.getName());
+        client.getOutInterceptors().add(new WSS4JOutInterceptor(outProps));
+    }
+
+    @Test
+    public void testHelloWolrd_old() throws MalformedURLException {
         URL serviceWSDL = new URL("http://localhost:9000/helloWorld?wsdl");
-        Service service = Service.create(serviceWSDL, SERVICE_NAME);
+        final QName serviceName = new QName("http://service.it2go.com/", "HelloWorld");
+        Service service = Service.create(serviceWSDL, serviceName);
         // Endpoint Address
         //String endpointAddress = "http://localhost:9000/helloWorld";
         // If web service deployed on Tomcat (either standalone or embedded)
@@ -36,17 +106,17 @@ public final class Client {
         //service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
 
         HelloWorld hw = service.getPort(HelloWorld.class);
-        System.out.println(hw.sayHi("World"));
+        hw.sayHi("John Doe");
 
-        UserImpl user = new UserImpl("John","Doe");
-        System.out.println(hw.sayHiToUser(user));
+        //UserImpl user = new UserImpl("John","Doe");
+        //System.out.println(hw.sayHiToUser(user));
 
         //say hi to some more users to fill up the map a bit
-        user = new UserImpl("Ali","Mbarek");
-        System.out.println(hw.sayHiToUser(user));
+        //user = new UserImpl("Ali","Mbarek");
+        //System.out.println(hw.sayHiToUser(user));
 
-        user = new UserImpl("Bruce","Lee");
-        System.out.println(hw.sayHiToUser(user));
+        //user = new UserImpl("Bruce","Lee");
+        //System.out.println(hw.sayHiToUser(user));
 /*
         System.out.println();
         System.out.println("Users: ");
@@ -54,15 +124,52 @@ public final class Client {
         for (Map.Entry<Integer, User> e : users.entrySet()) {
             System.out.println("  " + e.getKey() + ": " + e.getValue().getFullName());
         }
-*/
-        testStream();
+        */
     }
 
+    @Test
+    public void testHelloWolrd2() throws MalformedURLException {
+        URL serviceWSDL = new URL("http://localhost:9000/helloWorld2?wsdl");
+        final QName serviceName = new QName("http://service.it2go.com/", "HelloWorld2");
+        Service service = Service.create(serviceWSDL, serviceName);
+        // Endpoint Address
+        //String endpointAddress = "http://localhost:9000/helloWorld";
+        // If web service deployed on Tomcat (either standalone or embedded)
+        // as described in sample README, endpoint should be changed to:
+        // String endpointAddress = "http://localhost:8080/java_first_jaxws/services/hello_world";
+
+        // Add a port to the Service
+        //service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, endpointAddress);
+
+        HelloWorld2 hw = service.getPort(HelloWorld2.class);
+        hw.sayMyName("Ali Mbarek");
+
+        //UserImpl user = new UserImpl("John","Doe");
+        //System.out.println(hw.sayHiToUser(user));
+
+        //say hi to some more users to fill up the map a bit
+        //user = new UserImpl("Ali","Mbarek");
+        //System.out.println(hw.sayHiToUser(user));
+
+        //user = new UserImpl("Bruce","Lee");
+        //System.out.println(hw.sayHiToUser(user));
+/*
+        System.out.println();
+        System.out.println("Users: ");
+        Map<Integer, User> users = hw.getUsers();
+        for (Map.Entry<Integer, User> e : users.entrySet()) {
+            System.out.println("  " + e.getKey() + ": " + e.getValue().getFullName());
+        }
+        */
+    }
+
+    @Test
     public void testDispatch(){
 
     }
 
-    public static void testStream() throws Exception {
+    @Test
+    public void testStream() throws Exception {
    //     JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
         // Send data
         URL url = new URL("http://localhost:9000/helloWorld");

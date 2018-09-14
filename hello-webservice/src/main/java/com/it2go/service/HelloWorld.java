@@ -14,7 +14,8 @@ import java.util.Map;
 // START SNIPPET: service
 
 @WebService
-@Policy(placement = Policy.Placement.BINDING, uri = "classpath:/SignedEncryptedSupportingTokens.policy")
+//Policy(placement = Policy.Placement.BINDING, uri = "classpath:/no_security.policy")
+//Policy(placement = Policy.Placement.BINDING, uri = "classpath:/SignedEncryptedSupportingTokens.policy")
 public interface HelloWorld {
 
     String sayHi(@WebParam(name = "text") String text);

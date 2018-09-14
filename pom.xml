@@ -46,6 +46,7 @@
         <module>ri-webapp</module>
         <module>ws-clients</module>
         <module>Autho-ri-webapp</module>
+        <module>auto-cxf-app</module>
     </modules>
 
     <dependencyManagement>

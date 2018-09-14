@@ -12,6 +12,7 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 import org.apache.wss4j.dom.handler.WSHandlerConstants;
+import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.net.ssl.KeyManager;
@@ -37,41 +38,24 @@ import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by mmbarek on 05.07.2017.
- */
-public class CXFClient {
+import static org.junit.Assert.*;
 
-    public static void main(String[] args) {
-        //testService(null);
-        //testSecuredService(null);
-
-        try {
-            noAuthenticationTest();
-//            basicAuthenticationTest();
-//            caAuthenticationTest();
-//            testService(null);
-//            testUserNameToken();
-//            testSpring();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+public class CXFClientTest {
 
     private static void setupFiddlerProxy(){
 
-            //for localhost testing only
-            javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
-                    new javax.net.ssl.HostnameVerifier(){
+        //for localhost testing only
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                new javax.net.ssl.HostnameVerifier(){
 
-                        public boolean verify(String hostname,
-                                              javax.net.ssl.SSLSession sslSession) {
-                            if (hostname.equals("localhost")) {
-                                return true;
-                            }
-                            return false;
+                    public boolean verify(String hostname,
+                                          javax.net.ssl.SSLSession sslSession) {
+                        if (hostname.equals("localhost")) {
+                            return true;
                         }
-                    });
+                        return false;
+                    }
+                });
 
 
 /*        System.setProperty("http.proxyHost", "127.0.0.1");
@@ -80,78 +64,8 @@ public class CXFClient {
         System.setProperty("https.proxyPort", "8888");*/
     }
 
-    public static void testCxf(){
-
-    }
-
-    public static void testUserNameToken() throws MalformedURLException {
-        setupFiddlerProxy();
-        //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
-        //String cxfUrl = "https://localhost:8443/cxf/services/WssHelloWorld?wsdl";
-        String cxfUrl = "http://bb-4512.leismann.net:8080/cxf/services/WssHelloWorld?wsdl";
-        URL wsdlLocation = new URL(cxfUrl);
-        //URL wsdlLocation = new URL("file:/E:/Dev/Git/test/jax-ws/ws-clients/src/main/resources/helloWorld-cxf-wss.wsdl");
-
-        QName qname = new QName("http://service.it2go.com/", "HelloWorld");
-        Service port = Service.create(wsdlLocation, qname);
-        HelloWorld helloService = port.getPort(HelloWorld.class);
-
-        //add username and password for container authentication
-        BindingProvider bp = (BindingProvider) helloService;
-        Client client = ClientProxy.getClient(helloService);
-
-        Endpoint cxfEndpoint = client.getEndpoint();
-        HTTPConduit conduit = (HTTPConduit) client.getConduit();
-        //bp.getRequestContext().put("username", "mkyong");
-        bp.getRequestContext().put("ws-security.username", "mkyong");
-        //bp.getRequestContext().put("ws-security.username.encrypt", "mkyong"); //"security.encryption.username"
-        //bp.getRequestContext().put("security.encryption.username", "tomcat");
-        bp.getRequestContext().put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
-        //bp.getRequestContext().put("ws-security.password", "123456");
-        bp.getRequestContext().put(SecurityConstants.CALLBACK_HANDLER, ClientPasswordCallback.class.getName());
-        bp.getRequestContext().put("security.username", "mkyong");
-        bp.getRequestContext().put(WSHandlerConstants.ENCRYPTION_PARTS, "{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body");
-//        bp.getRequestContext().put("security.password", "123456");
-       // bp.getRequestContext().put(SecurityConstants.USERNAME, "mkyong");
-        //bp.getRequestContext().put(WSHandlerConstants.USER, "mkyong");
-/*        try {
-            SSLSocketFactory factory = getSslSocketFactory();
-            bp.getRequestContext().put(JAXWSProperties.SSL_SOCKET_FACTORY, factory);
-            //prepareConduit(conduit);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-
-        //############################################################################################
-        Map<String,Object> outProps = new HashMap<String,Object>();
-        //outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
-        outProps.put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
-        outProps.put("action", "UsernameToken");
-        outProps.put("user", "mkyong");
-        //outProps.put("security.username", "mkyong");
-        outProps.put("passwordType", "PasswordText");
-        outProps.put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
-        //outProps.put(WSHandlerConstants.ENCRYPTION_PARTS, "{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body");
-        //outProps.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld");
-        outProps.put("passwordCallbackClass",
-                ClientPasswordCallback.class.getName());
-
-        WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
-
-        // Disable CN verification from certificate
-        // this is needed for localhost envirement
-        TLSClientParameters tlsParams = new TLSClientParameters();
-        tlsParams.setDisableCNCheck(true);
-        conduit.setTlsClientParameters(tlsParams);
-
-        cxfEndpoint.getOutInterceptors().add(wssOut);
-
-        String answ = helloService.sayHi("CXF Client!!!");
-        System.out.println(answ);
-    }
-
-    public static void testService(String[] args) {
+    @Test
+    public void testService() {
         setupFiddlerProxy();
         try {
             //String cxfUrl = "http://localhost:8080/cxf/services/helloWorld?wsdl";
@@ -188,6 +102,74 @@ public class CXFClient {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testUserNameToken() throws MalformedURLException {
+        setupFiddlerProxy();
+        //String cxfUrl = "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld?wsdl";
+        //String cxfUrl = "https://localhost:8443/cxf/services/WssHelloWorld?wsdl";
+        String cxfUrl = "http://bb-4512.leismann.net:8080/cxf/services/WssHelloWorld?wsdl";
+        URL wsdlLocation = new URL(cxfUrl);
+        //URL wsdlLocation = new URL("file:/E:/Dev/Git/test/jax-ws/ws-clients/src/main/resources/helloWorld-cxf-wss.wsdl");
+
+        QName qname = new QName("http://service.it2go.com/", "HelloWorld");
+        Service port = Service.create(wsdlLocation, qname);
+        HelloWorld helloService = port.getPort(HelloWorld.class);
+
+        //add username and password for container authentication
+        BindingProvider bp = (BindingProvider) helloService;
+        Client client = ClientProxy.getClient(helloService);
+
+        Endpoint cxfEndpoint = client.getEndpoint();
+        HTTPConduit conduit = (HTTPConduit) client.getConduit();
+        //bp.getRequestContext().put("username", "mkyong");
+        bp.getRequestContext().put("ws-security.username", "mkyong");
+        //bp.getRequestContext().put("ws-security.username.encrypt", "mkyong"); //"security.encryption.username"
+        //bp.getRequestContext().put("security.encryption.username", "tomcat");
+        bp.getRequestContext().put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
+        //bp.getRequestContext().put("ws-security.password", "123456");
+        bp.getRequestContext().put(SecurityConstants.CALLBACK_HANDLER, ClientPasswordCallback.class.getName());
+        bp.getRequestContext().put("security.username", "mkyong");
+        bp.getRequestContext().put(WSHandlerConstants.ENCRYPTION_PARTS, "{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body");
+//        bp.getRequestContext().put("security.password", "123456");
+        // bp.getRequestContext().put(SecurityConstants.USERNAME, "mkyong");
+        //bp.getRequestContext().put(WSHandlerConstants.USER, "mkyong");
+/*        try {
+            SSLSocketFactory factory = getSslSocketFactory();
+            bp.getRequestContext().put(JAXWSProperties.SSL_SOCKET_FACTORY, factory);
+            //prepareConduit(conduit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+
+        //############################################################################################
+        Map<String,Object> outProps = new HashMap<String,Object>();
+        //outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+        outProps.put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
+        outProps.put("action", "UsernameToken");
+        outProps.put("user", "mkyong");
+        //outProps.put("security.username", "mkyong");
+        outProps.put("passwordType", "PasswordText");
+        outProps.put("security.signature.properties", "C:/Dev/learning/webservices/jaxws/ws-clients/src/main/resources/client_sign.properties");
+        //outProps.put(WSHandlerConstants.ENCRYPTION_PARTS, "{Content}{http://schemas.xmlsoap.org/soap/envelope/}Body");
+        //outProps.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://bb-4512.leismann.net:8090/cxf/services/WssHelloWorld");
+        outProps.put("passwordCallbackClass",
+                ClientPasswordCallback.class.getName());
+
+        WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
+
+        // Disable CN verification from certificate
+        // this is needed for localhost envirement
+        TLSClientParameters tlsParams = new TLSClientParameters();
+        tlsParams.setDisableCNCheck(true);
+        conduit.setTlsClientParameters(tlsParams);
+
+        cxfEndpoint.getOutInterceptors().add(wssOut);
+
+        String answ = helloService.sayHi("CXF Client!!!");
+        System.out.println(answ);
     }
 
 

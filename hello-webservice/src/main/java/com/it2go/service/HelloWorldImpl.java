@@ -18,7 +18,7 @@ public class HelloWorldImpl implements HelloWorld {
 
     @Override
     public String sayHi(String text) {
-        System.out.println("sayHi called");
+        System.out.println("Hello " + text);
         return "Hello " + text;
     }
 
