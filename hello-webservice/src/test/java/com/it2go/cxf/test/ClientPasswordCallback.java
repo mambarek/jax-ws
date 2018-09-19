@@ -12,14 +12,15 @@ public class ClientPasswordCallback implements CallbackHandler {
 
         WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
 
-/*
         if ("mkyong".equals(pc.getIdentifier())) {
             System.out.println(">>> ClientPasswordCallback --> pc.getPassword() " + pc.getPassword());
 
             pc.setPassword("123456");
         }
-*/
-        // x500 password for "tomcat" user
-        pc.setPassword("tomcat");
+
+        // x500 password for "tomcat" user stored in Certificate
+        if ("tomcat".equals(pc.getIdentifier())) {
+            pc.setPassword("tomcat");
+        }
     }
 }
